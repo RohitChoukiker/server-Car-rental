@@ -12,7 +12,7 @@ const port = process.env.PORT || 3000;
 await connectDB();
 
 app.use( cors({
-    origin:  process.env.FRONTEND_URL ||"http://localhost:5173", // frontend URL
+    origin:  process.env.FRONTEND_URL ", // frontend URL
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
