@@ -1,6 +1,7 @@
 import express from "express";
 import "dotenv/config";
 import cors from "cors";
+import morgan from "morgan";
 import connectDB from "./configs/mongodb.configs.js";
 import userRouter from "./routes/user.routes.js";
 import ownerRouter from "./routes/owner.route.js";
@@ -17,6 +18,8 @@ app.use( cors({
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   }));
+
+app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.get("/", (req, res) => {
