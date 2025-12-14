@@ -164,12 +164,20 @@ async function testCheckCarAvailability() {
     log.warning('No car ID available, skipping...');
     return;
   }
-  const response = await axios.post(`${BASE_URL}/bookings/check-availability`, {
-    carId,
-    startDate: '2025-12-20',
-    endDate: '2025-12-25'
+  // Get car location first
+  const carResponse = await axios.get(`${BASE_URL}/owner/cars`, {
+    headers: { Authorization: `Bearer ${authToken}` }
   });
-  log.info(`Availability: ${response.data.available || response.data.message}`);
+  const cars = carResponse.data.cars || carResponse.data;
+  const location = cars[0]?.location || 'Mumbai, Maharashtra';
+  
+  const response = await axios.post(`${BASE_URL}/bookings/check-availability`, {
+    location,
+    pickupDate: '2025-12-20',
+    returnDate: '2025-12-25'
+  });
+  const availableCars = response.data.availableCars || [];
+  log.info(`Available cars found: ${availableCars.length}`);
 }
 
 async function testCreateBooking() {
@@ -179,15 +187,25 @@ async function testCreateBooking() {
   }
   const response = await axios.post(`${BASE_URL}/bookings/create`,
     {
-      carId,
-      startDate: '2025-12-20',
-      endDate: '2025-12-25',
-      totalPrice: 250
+      car: carId,
+      pickupDate: '2025-12-20',
+      returnDate: '2025-12-25'
     },
     { headers: { Authorization: `Bearer ${authToken}` } }
   );
-  bookingId = response.data.booking?._id || response.data._id;
-  log.info(`Booking created with ID: ${bookingId}`);
+  log.info(`Booking created: ${response.data.message}`);
+  
+  // Get booking ID from getUserBookings
+  if (response.data.success) {
+    const bookingsResponse = await axios.get(`${BASE_URL}/bookings/user`, {
+      headers: { Authorization: `Bearer ${authToken}` }
+    });
+    const bookings = bookingsResponse.data.bookings || bookingsResponse.data;
+    if (bookings.length > 0) {
+      bookingId = bookings[0]._id;
+      log.info(`Retrieved booking ID: ${bookingId}`);
+    }
+  }
 }
 
 async function testGetUserBookings() {
