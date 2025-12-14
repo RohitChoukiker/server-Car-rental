@@ -23,7 +23,9 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.get("/", (req, res) => {
-  res.send("SERVER IS RUNNING...");
+  res.status(200);
+  res.json("Welcome to Car Rental Application Server"+ new Date());
+  res.send("Server is running...");
 });
 
 app.use("/api/user", userRouter);
