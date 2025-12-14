@@ -1,0 +1,176 @@
+### Car Rental Server - API Tests
+### Base URL
+@baseUrl = http://localhost:3000/api
+@token = your_jwt_token_here
+
+### ============================================
+### USER APIs
+### ============================================
+
+### 1. Register User
+POST {{baseUrl}}/user/register
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "testuser@example.com",
+  "password": "password123",
+  "phone": "1234567890"
+}
+
+### 2. Login User
+POST {{baseUrl}}/user/login
+Content-Type: application/json
+
+{
+  "email": "testuser@example.com",
+  "password": "password123"
+}
+
+### 3. Get User Data (Protected)
+GET {{baseUrl}}/user/data
+Authorization: Bearer {{token}}
+
+### 4. Get Available Cars (Public)
+GET {{baseUrl}}/user/cars
+
+### ============================================
+### OWNER APIs
+### ============================================
+
+### 5. Change Role to Owner (Protected)
+POST {{baseUrl}}/owner/change-role
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "role": "owner"
+}
+
+### 6. Add Car (Protected - with image)
+POST {{baseUrl}}/owner/add-car
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="carName"
+
+Toyota Camry
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="carModel"
+
+2023
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="pricePerDay"
+
+50
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="carType"
+
+Sedan
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="fuelType"
+
+Petrol
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="transmission"
+
+Automatic
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="seats"
+
+5
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="description"
+
+Comfortable sedan for family trips
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### 7. Get Owner Cars (Protected)
+GET {{baseUrl}}/owner/cars
+Authorization: Bearer {{token}}
+
+### 8. Toggle Car Availability (Protected)
+POST {{baseUrl}}/owner/toggle-car
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "carId": "your_car_id_here"
+}
+
+### 9. Delete Car (Protected)
+POST {{baseUrl}}/owner/delete-car
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "carId": "your_car_id_here"
+}
+
+### 10. Get Dashboard Data (Protected)
+GET {{baseUrl}}/owner/dashboard
+Authorization: Bearer {{token}}
+
+### 11. Update User Profile Image (Protected)
+POST {{baseUrl}}/owner/update-image
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="image"; filename="profile.jpg"
+Content-Type: image/jpeg
+
+< ./path/to/your/image.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### ============================================
+### BOOKING APIs
+### ============================================
+
+### 12. Check Car Availability (Public)
+POST {{baseUrl}}/bookings/check-availability
+Content-Type: application/json
+
+{
+  "carId": "your_car_id_here",
+  "startDate": "2025-12-20",
+  "endDate": "2025-12-25"
+}
+
+### 13. Create Booking (Protected)
+POST {{baseUrl}}/bookings/create
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "carId": "your_car_id_here",
+  "startDate": "2025-12-20",
+  "endDate": "2025-12-25",
+  "totalPrice": 250
+}
+
+### 14. Get User Bookings (Protected)
+GET {{baseUrl}}/bookings/user
+Authorization: Bearer {{token}}
+
+### 15. Get Owner Bookings (Protected)
+GET {{baseUrl}}/bookings/owner
+Authorization: Bearer {{token}}
+
+### 16. Change Booking Status (Protected)
+POST {{baseUrl}}/bookings/change-status
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "bookingId": "your_booking_id_here",
+  "status": "confirmed"
+}
+
+### ============================================
+### Server Health Check
+### ============================================
+
+### 17. Root Endpoint
+GET http://localhost:3000/
