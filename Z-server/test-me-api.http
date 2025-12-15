@@ -1,0 +1,30 @@
+### Sign Up - New User
+POST http://localhost:3000/api/user/sign-up
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "test@example.com",
+  "password": "password123",
+  "passwordConfirm": "password123",
+  "role": "user"
+}
+
+###
+
+### Login - Get Token
+POST http://localhost:3000/api/user/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+###
+
+### Get Current User - /me API (Replace YOUR_TOKEN_HERE with actual token from login response)
+GET http://localhost:3000/api/user/me
+Authorization: Bearer YOUR_TOKEN_HERE
+
+###

@@ -3,8 +3,9 @@ const router = express.Router();
 const catchAsync = require("../utils/catchAsync");
 const User = require("../models/user-model");
 const bcrypt = require("bcrypt");
-
+ 
 const jwt = require("jsonwebtoken");
+const protect = require("../middleware/auth-middleware");
 
 router.post("/sign-up",
   catchAsync(async (req, res) => {
@@ -104,9 +105,11 @@ router.post("/login", async (req, res) => {
    
 ); 
 
-router.get("/me", async (req, res) => {
-  // Get user data logic here
-  res.send("User data");
+router.get("/me",protect, async (req, res) => {
+  res.status(200).json({
+    success: true,
+    user: req.user,
+  });
 });
 
 router.put("/update", async (req, res) => {
