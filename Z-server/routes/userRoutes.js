@@ -113,20 +113,41 @@ router.get("/me",protect, async (req, res) => {
 });
 
 router.put("/update", async (req, res) => {
-  // Update user data logic here
+  
   res.send("User data updated");
 });
 
-router.delete("/delete", async (req, res) => {
-  // Delete user logic here
-  res.send("User deleted");
+router.delete("/delete-me", protect, async (req, res) => {
+  const user = await User.findByIdAndDelete(req.user._id);
+
+  if (!user) {
+    return res.status(404).json({
+      status: "fail",
+      message: "User not found",
+    });
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "Account deleted successfully",
+  });
 });
 
-router.post("/logout", async (req, res) => {
-  // User logout logic here
-  res.send("User logged out");
-}
-);  
+router.post("/logout", (req, res) => {
+  
+  res.cookie("jwt", "", {
+    httpOnly: true,
+    expires: new Date(0),
+   
+    sameSite: "strict",
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Logged out successfully",
+  });
+});
+
 
 
 module.exports = router;
