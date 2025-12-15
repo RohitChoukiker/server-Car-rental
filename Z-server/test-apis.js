@@ -62,9 +62,9 @@ async function testUserLogin() {
     email: testUser.email,
     password: testUser.password
   });
-  authToken = response.data.token;
-  log.info(`Login successful. Token: ${authToken.substring(0, 20)}...`);
-  log.info(`User: ${response.data.data?.user?.name || response.data.user?.name}`);
+  authToken = response.data.data?.token || response.data.token;
+  log.info(`Login successful. Token: ${authToken ? authToken.substring(0, 20) + '...' : 'No token received'}`);
+  log.info(`User: ${response.data.data?.user?.name || response.data.user?.name || 'Unknown'}`);
 }
 
 async function testGetCurrentUser() {
