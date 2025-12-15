@@ -43,10 +43,7 @@ const userSchema = new mongoose.Schema(
       enum: ["owner", "user"],
       default: "user",
     },
-    image: {
-      type: String,
-      default: "",
-    },
+
   },
   { timestamps: true }
 );
