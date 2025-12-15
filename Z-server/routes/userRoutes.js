@@ -112,10 +112,50 @@ router.get("/me",protect, async (req, res) => {
   });
 });
 
-router.put("/update", async (req, res) => {
-  
-  res.send("User data updated");
-});
+router.put("/update", protect, catchAsync(async (req, res) => {
+  const { name, email } = req.body;
+
+  if (req.body.password || req.body.passwordConfirm) {
+    return res.status(400).json({
+      status: "fail",
+      message: "This route is not for password updates",
+    });
+  }
+
+  // Check if email is being changed and if it already exists
+  if (email && email !== req.user.email) {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({
+        status: "fail",
+        message: "Email already in use",
+      });
+    }
+  }
+
+  // Update user data
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      name: name || req.user.name,
+      email: email || req.user.email,
+      phone: phone || req.user.phone,
+      address: address || req.user.address,
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  res.status(200).json({
+    status: "success",
+    message: "User data updated successfully",
+    data: {
+      user: updatedUser,
+    },
+  });
+}));
 
 router.delete("/delete-me", protect, async (req, res) => {
   const user = await User.findByIdAndDelete(req.user._id);
