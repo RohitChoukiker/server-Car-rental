@@ -24,11 +24,7 @@ app.use((err, req, res, next) => {
     next();
 });
 
-// Logging middleware
-app.use((req, res, next) => {
-    console.log(`📝 ${req.method} ${req.url} - ${new Date().toISOString()}`);
-    next();
-});
+
 
 app.use('/api/user', userRoutes);
 

@@ -5,8 +5,10 @@ module.exports = async (req, res, next) => {
   try {
     let token;
 
-    // JWT Authorization header se uthao
-    if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer")
+    ) {
       token = req.headers.authorization.split(" ")[1];
     } else if (req.cookies && req.cookies.token) {
       token = req.cookies.token;
@@ -18,10 +20,9 @@ module.exports = async (req, res, next) => {
       });
     }
 
-    // Token verify
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log("fetching Id => " + decoded.id);
 
-    // User lao
     const user = await User.findById(decoded.id);
 
     if (!user) {
@@ -30,7 +31,6 @@ module.exports = async (req, res, next) => {
       });
     }
 
-    // req me user attach
     req.user = user;
     next();
   } catch (err) {
