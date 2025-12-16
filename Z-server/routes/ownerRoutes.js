@@ -45,8 +45,8 @@ router.post('/add-car', portect,  restrictedTo("owner"), catchAsync(async (req, 
     });
 }));
 
-router.post('/toggle-availability', catchAsync(async (req, res) => {
-  const { carId, isAvaliable } = req.body;
+router.post('/toggle-availability', portect, restrictedTo("owner"), catchAsync(async (req, res) => {
+  const { carId } = req.body;
   const ownerId = req.user._id;
 
   if (!carId) {
@@ -73,7 +73,7 @@ router.post('/toggle-availability', catchAsync(async (req, res) => {
       });
     }
     
-   car.isAvailable = !car.isAvailable;
+   car.isAvaliable = !car.isAvaliable;
     await car.save();
 
     res.status(200).json({
