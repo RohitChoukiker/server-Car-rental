@@ -76,7 +76,7 @@ async function testGetCurrentUser() {
   log.info(`Role: ${response.data.data?.user?.role || response.data.user?.role}`);
 }
 
-// Main test runner
+
 async function runAllTests() {
   console.log(`\n${'='.repeat(60)}`);
   console.log(`${colors.blue}Z-SERVER (NEW) - API TESTING${colors.reset}`);
