@@ -45,7 +45,44 @@ router.post('/add-car', portect,  restrictedTo("owner"), catchAsync(async (req, 
     });
 }));
 
-router.post('/toggle-car', catchAsync(async (req, res) => {}));
+router.post('/toggle-availability', catchAsync(async (req, res) => {
+  const { carId, isAvaliable } = req.body;
+  const ownerId = req.user._id;
+
+  if (!carId) {
+      return res.status(400).json({
+        success: false,
+        message: "Car ID is required",
+      });
+    }
+
+  const car = await Car.findById(carId);
+
+  if (!car) {
+      return res.status(404).json({
+        success: false,
+        message: "Car not found",
+      });
+    }
+    
+  // Check if the logged-in user is the owner of the car
+  if (car.owner.toString() !== ownerId.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to update this car",
+      });
+    }
+    
+   car.isAvailable = !car.isAvailable;
+    await car.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Car availability toggled successfully",
+      data: car,
+    });
+
+}));
 
 
 router.get('/get-owner-cars', portect, restrictedTo("owner"), catchAsync(async (req, res) => {
