@@ -1,8 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const Car = require("../models/car-model");
+const Booking = require("../models/booking-model");
 const catchAsync = require("../utils/catchAsync");
 const protect = require("../middleware/auth-middleware");
+const restrictedTo = require("../middleware/restrictTo-middleware");
 
 router.post(
   "/create",
@@ -26,7 +28,7 @@ router.post(
       });
     }
 
-      if (!car.isAvailable) {
+      if (!car.isAvaliable) {
       return res.status(400).json({
         success: false,
         message: "Car is not available for booking",
@@ -60,7 +62,7 @@ router.post(
       status: "confirmed",
     });
 
-    car.isAvailable = false;
+    car.isAvaliable = false;
     await car.save();
 
   
@@ -75,23 +77,118 @@ router.post(
 );
 
 router.get(
-  "/my-booking",
-  protect,
-  catchAsync(async (req, res) => {})
+  "/my-booking",protect,  catchAsync(async (req, res) => {
+    const userId = req.user._id;
+
+    const bookings = await Booking.find({ user: userId })
+      .populate("car")
+      .populate("owner", "name email");
+
+    res.status(200).json({
+      success: true,
+      data: bookings,
+    });
+  })
 );
 router.get(
   "/owner-bookings",
-  catchAsync(async (req, res) => {})
+  protect,
+  restrictedTo("owner"),
+  catchAsync(async (req, res) => {
+    const ownerId = req.user._id;
+
+    const bookings = await Booking.find({ owner: ownerId })
+      .populate("car")
+      .populate("user", "name email");
+
+    res.status(200).json({
+      success: true,
+      data: bookings,
+    });
+  })
 );
 
 router.post(
   "/confirmation",
-  catchAsync(async (req, res) => {})
+  catchAsync(async (req, res) => {
+    const { bookingId, status } = req.body;
+
+    if (!bookingId || !status) {
+      return res.status(400).json({
+        success: false,
+        message: "Booking ID and status are required",
+      });
+    }
+
+    if (!["confirmed", "cancelled"].includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid status value",
+      });
+    }
+
+    const booking = await Booking.findById(bookingId).populate("car");
+
+    if (!booking) {
+      return res.status(404).json({
+        success: false,
+        message: "Booking not found",
+      });
+    }
+
+    booking.status = status;
+    await booking.save();
+
+
+    if (status === "cancelled") {
+      const car = await Car.findById(booking.car._id);
+      car.isAvaliable = true;
+      await car.save();
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Booking status updated successfully",
+      data: booking,
+    });
+  })
 );
 
 router.post(
   "/cancel",
-  catchAsync(async (req, res) => {})
+  catchAsync(async (req, res) => {
+    const { bookingId } = req.body;
+
+    if (!bookingId) {
+      return res.status(400).json({
+        success: false,
+        message: "Booking ID is required",
+      });
+    }
+
+    const booking = await Booking.findById(bookingId).populate("car");
+
+    if (!booking) {
+      return res.status(404).json({
+        success: false,
+        message: "Booking not found",
+      });
+    }
+
+    booking.status = "cancelled";
+    await booking.save();
+
+  
+    const car = await Car.findById(booking.car._id);
+    car.isAvaliable = true;
+    await car.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Booking cancelled successfully",
+      data: booking,
+    });
+  })
 );
 
 module.exports = router;
