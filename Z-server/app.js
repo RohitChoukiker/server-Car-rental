@@ -3,6 +3,7 @@ const app = express();
 const dotenv = require('dotenv');
 const morgan = require('morgan');
 const userRoutes = require('./routes/userRoutes');
+const carRoutes = require('./routes/carRoutes');
 const cors = require('cors');
 dotenv.config();
 
@@ -34,7 +35,9 @@ app.use((err, req, res, next) => {
 
 
 app.use('/api/user', userRoutes);
-app
+app.use('/api/cars', carRoutes);
+// app.use('/api/owner', require('./routes/ownerRoutes'));
+// app.use('/api/booking', require('./routes/bookingRoutes'));
 
 
 

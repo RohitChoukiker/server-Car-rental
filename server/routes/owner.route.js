@@ -16,7 +16,7 @@ const ownerRouter = express.Router();
 
 ownerRouter.post("/change-role", protect, changeRoleOwner); // Protect this route to ensure only authenticated users can change their role
 
-ownerRouter.post("/add-car", protect, upload.single("image"), addCar);
+ownerRouter.post("/add-car", protect, upload.single("image"), addCar); 
 
 ownerRouter.get("/cars", protect, getOwnerCars); // Get all cars listed by the owner
 ownerRouter.post("/toggle-car", protect, toggleCarAvailability); // Toggle car availability

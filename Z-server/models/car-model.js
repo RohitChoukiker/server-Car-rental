@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 
 const carSchema = new mongoose.Schema(
@@ -21,4 +21,4 @@ const carSchema = new mongoose.Schema(
 );
 
 const Car = mongoose.models.Car || mongoose.model("Car", carSchema);
-export default Car;
+module.exports = Car;
