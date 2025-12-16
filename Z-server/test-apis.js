@@ -95,7 +95,7 @@ async function runAllTests() {
     const result = await testAPI(name, testFn);
     if (result) passed++;
     else failed++;
-    // Small delay between tests
+   
     await new Promise(resolve => setTimeout(resolve, 500));
   }
 
