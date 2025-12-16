@@ -402,6 +402,28 @@
 			]
 		},
 		{
+			"name": "Car APIs",
+			"item": [
+				{
+					"name": "Get All Available Cars",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/cars/get-cars",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"cars",
+								"get-cars"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
 			"name": "Booking APIs",
 			"item": [
 				{

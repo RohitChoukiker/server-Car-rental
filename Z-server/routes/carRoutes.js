@@ -4,7 +4,7 @@ const catchAsync = require('../utils/catchAsync');
 const Car = require('../models/car-model');
 
 router.get("/get-cars", catchAsync(async (req, res) => {
-  const cars = await Car.find({ isAvailable: true });
+  const cars = await Car.find({ isAvaliable: true });
 
   res.status(200).json({
     success: true,
@@ -12,7 +12,7 @@ router.get("/get-cars", catchAsync(async (req, res) => {
   });
 }));
 
-router.get("/get-car/:id", catchAsync(async (req, res) => {}));
+// router.get("/get-car/:id", catchAsync(async (req, res) => {}));
 
 
 

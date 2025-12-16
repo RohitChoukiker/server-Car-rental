@@ -90,6 +90,7 @@ router.delete('/remove-car',  portect, restrictedTo("owner"), catchAsync(async (
       message: 'You are not authorized to remove this car',
     });
   }
+  // console.log("Car to be removed:", car.owner.toString(), ownerId.toString());
 
   await Car.findByIdAndDelete(carId);
 
